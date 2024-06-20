@@ -1,27 +1,18 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import "./index.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./routes/root";
 import NotFoundPage from "./not-found";
-import HomePage from "./routes/home";
 import LoginPage from "./routes/login";
 import RegisterPage from "./routes/register";
 import ResetPasswordPage from "./routes/resetPassword";
-import ProtectedPage from "./routes/protected";
+import DashboardPage from "./routes/dashboard";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root/>,
-    errorElement: <NotFoundPage/>
-  },
-  {
-    path: "/home",
-    element: <HomePage />,
     errorElement: <NotFoundPage/>
   },
   {
@@ -40,8 +31,8 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage/>
   },
   {
-    path: "/protected",
-    element: <ProtectedPage />,
+    path: "/dashboard",
+    element: <DashboardPage />,
     errorElement: <NotFoundPage/>
   },
 ]);

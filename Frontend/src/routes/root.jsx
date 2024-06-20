@@ -5,8 +5,8 @@ export default function Root() {
       <>
         <main>
             <section className="flex justify-between items-center p-2">
-                <img src="/devto-light.svg" alt="" className="size-12"/>
-                <nav class="flex justify-center gap-5">
+                <img src="/devto-light.svg" alt="logo" className="size-12"/>
+                <nav className="flex justify-center gap-5">
                     <Link to={`/register`} className="font-semibold p-1 rounded hover:bg-blue-500 hover:text-white hover:border-blue-500 " >Registrar</Link>
                     <Link to={`/login`} className="font-semibold p-1 rounded hover:bg-blue-500 hover:text-white hover:border-blue-500 " >Ingresar</Link>
                 </nav>

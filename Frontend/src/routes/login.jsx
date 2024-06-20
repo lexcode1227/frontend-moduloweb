@@ -1,14 +1,19 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 export default function LoginPage() {
     const [formValues, setFormValues] = useState({
         username: '',
         password: '',
       });
+    const [email, setEmail] = useState('')
     
     const navigate = useNavigate();
 
+    const handleEmailInputChange = (e)=>{
+        setEmail(e.target.value)
+    }
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setFormValues({
@@ -16,6 +21,25 @@ export default function LoginPage() {
             [name]: value
         });
     };
+    const handleRecoverPass = async ()=> {
+        try {
+            const res = await fetch('http://localhost:3000/api/auth/forgotPassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({email})
+            })
+            const result = await res.json()
+            setEmail('')
+            if (result.message) {
+                // console.log(result.message)
+            }
+            navigate('/login')
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -32,8 +56,12 @@ export default function LoginPage() {
                 password: '',
               })
             if (result.token) {
-                alert(result.token)
-                navigate('/protected')
+                // Almacenando el token en una cookie
+                const in30Minutes = 1/48; //mini calculo para reducir el tiempo de 1h a 30min
+                Cookies.set('authToken', result.token, { expires: in30Minutes });
+
+                // Redirigiendo a la ruta protegida después del login exitoso
+                navigate('/dashboard')
             } else {
                 alert("Error en el login, sin Token")
             }
@@ -102,15 +130,17 @@ export default function LoginPage() {
                                 </div>
                                 {/*  Modal body */}
                                 <div className="p-4 md:p-5 space-y-4">
-                                    <div>
-                                        <label htmlFor="emailReset" className="block mb-2 text-sm font-medium text-gray-900">Tu email</label>
-                                        <input type="email" name="emailReset" id="emailReset" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5" placeholder="name@company.com" required/>
-                                    </div>
+                                    <form className="flex flex-col gap-4" action="#" onSubmit={handleRecoverPass}>
+                                        <div>
+                                            <label htmlFor="emailReset" className="block mb-2 text-sm font-medium text-gray-900">Tu email</label>
+                                            <input type="email" name="emailReset" id="emailReset" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5" placeholder="name@company.com" required onChange={handleEmailInputChange} value={email}/>
+                                        </div>
+                                        <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
+                                            <button data-modal-hide="static-modal" type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Recuperar</button>
+                                        </div>
+                                    </form>
+                                    {/* Modal footer */}
                                     <p className="text-base leading-relaxed text-gray-500">En tu correo podras encontrar un enlace para poder cambiar tu contraseña.</p>
-                                </div>
-                                {/* Modal footer */}
-                                <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
-                                    <button data-modal-hide="static-modal" type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Recuperar</button>
                                 </div>
                             </div>
                         </div>

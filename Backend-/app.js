@@ -4,8 +4,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
 const authRoutes = require('./routes/auth');
+const cors = require('cors')
 
 const app = express();
+app.use(cors())
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'views')));
 

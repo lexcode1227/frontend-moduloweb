@@ -35,7 +35,7 @@ export default function ResetPasswordPage() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (formValues.newPassword !== formValues.newPassword2) {            
-            alert("Las contraseñas no coinciden")
+            return alert("Las contraseñas no coinciden")
         }
         try {
             const res = await fetch('http://localhost:3000/api/auth/changePassword', {
@@ -44,7 +44,7 @@ export default function ResetPasswordPage() {
                     'Content-Type': 'application/json',
                     'Authorization': `${formValues.resetToken}`
                 },
-                body: JSON.stringify(formValues.newPassword)
+                body: JSON.stringify({newPassword: formValues.newPassword})
             })
             const result = await res.json()
             setFormValues({
@@ -52,11 +52,11 @@ export default function ResetPasswordPage() {
                 newPassword2: '',
                 resetToken: ''
                 })
-            if (result.token) {
-                alert(result.token, "cambiando contraseña...")
+            if (result.message) {
+                console.log(result.message)
                 navigate('/login')
             } else {
-                    alert("Error en el login, sin Token")
+                alert(`Error: ${result.errorMessage}`)
             }
                 
         } catch (error) {
@@ -82,12 +82,12 @@ export default function ResetPasswordPage() {
                             <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="name@company.com" required=""/>
                         </div> */}
                         <div>
-                            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">New Password</label>
-                            <input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required onChange={handleInputChange} value={formValues.password}/>
+                            <label htmlFor="newPassword" className="block mb-2 text-sm font-medium text-gray-900">New Password</label>
+                            <input type="password" name="newPassword" id="newPassword" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required onChange={handleInputChange} value={formValues.newPassword}/>
                         </div>
                         <div>
-                            <label htmlFor="password2" className="block mb-2 text-sm font-medium text-gray-900 ">Confirm password</label>
-                            <input type="password2" name="password2" id="password2" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required onChange={handleInputChange} value={formValues.password2}/>
+                            <label htmlFor="newPassword2" className="block mb-2 text-sm font-medium text-gray-900 ">Confirm password</label>
+                            <input type="password2" name="newPassword2" id="newPassword2" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required onChange={handleInputChange} value={formValues.newPassword2}/>
                         </div>
                         <div className="flex items-start">
                             <div className="flex items-center h-5">

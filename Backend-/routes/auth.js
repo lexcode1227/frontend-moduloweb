@@ -20,14 +20,14 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'El nombre de usuario o el correo electrónico ya están en uso' });
     }
   } catch (err) {
-    res.status(400).send(`Error al verificar si el usuario esta registrado, ${err.message}`);
+    res.status(400).json({message: `Error al verificar si el usuario esta registrado, ${err.message}`});
   }
   try {
     const newUser = new User({ name, lastname, username, password, email });
     await newUser.save();
-    res.status(201).send('Usuario registrado');
+    res.status(201).json({message: 'Usuario registrado', status: 201});
   } catch (error) {
-    res.status(400).send(`Error registrando usuario, ${error.message}`);
+    res.status(400).json({message: `Error registrando usuario, ${error.message}`})
   }
 
 });
@@ -37,25 +37,24 @@ router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ username, password });
     if (!user) {
-      return res.status(401).send('Credenciales inválidas');
+      return res.status(401).json({message:'Credenciales inválidas'});
     }
     const token = jwt.sign({ id: user._id, username: user.username, email: user.email }, process.env.SECRET_KEY, { expiresIn: '20m' });
      res.json({ token });
   } catch (error) {
-    res.status(500).send('Error en el servidor');
+    res.status(500).json({ message:'Error en el servidor'})
   }
 });
 
 router.post('/forgotPassword', async (req, res) => {
   const { email } = req.body;
   if (!email) {
-    res.status(401).send('Email no agregado - campo obligatorio')
+    res.status(401).json({message:'Email no agregado - campo obligatorio'})
   }
   try {
     const user = await User.findOne({ email });
-    console.log(user);
     if (!user) {
-      return res.status(401).send('Credenciales inválidas');
+      return res.status(401).json({message: 'Credenciales inválidas'});
     }
     const resetToken = jwt.sign({id: user._id, username: user.username, email: user.email }, process.env.SECRET_KEY, { expiresIn: '7m' })
 
@@ -71,7 +70,7 @@ router.post('/forgotPassword', async (req, res) => {
     from: process.env.USERMAIL,
     to: `${user.email}`,
     subject: 'Recupera tu contraseña',
-    text: `Crea tu nueva contraseña ingresando al siguiente link: http://localhost:3000?resetToken=${resetToken} 
+    text: `Crea tu nueva contraseña ingresando al siguiente link: http://localhost:5173/resetPassword?token=${resetToken} 
   
     Si no solicitaste el cambio de contraseña, ignora este correo. Tu contraseña continuará siendo la misma.
     `
@@ -84,9 +83,9 @@ router.post('/forgotPassword', async (req, res) => {
     console.log('Correo enviado correctamente: ' + info.response);
     }
     });
-    res.status(201).send('Token enviado a tu correo para cambiar contraseña');
+    res.status(201).json( {message: 'Token enviado a tu correo para cambiar contraseña'});
   } catch (error) {
-    res.status(500).send('Error en el servidor');
+    res.status(500).json( {message: 'Error en el servidor'});
   }
 });
 
@@ -95,23 +94,23 @@ router.put('/changePassword', verifyToken, async (req, res) => {
   const { email } = req.user;
   
   if (!email || !newPassword) {
-    res.status(401).send('Faltan credenciales por completar')
+    res.status(401).json({ message: 'Faltan credenciales por completar'})
   }
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).send('Usuario no encontrado');
+      return res.status(400).json( {message: 'Usuario no encontrado'});
     }
     user.password = newPassword
     await user.save();
-    res.status(201).send('Contraseña cambiada existosamente');
+    res.status(201).json( {message: 'Contraseña cambiada existosamente'});
   } catch (error) {
-    res.status(500).send(`Error en el servidor: ${error.message}`);
+    res.status(500).json( {errorMessage: `Error en el servidor cambiando contraseña: ${error.message}`});
   }
 });
 
-router.get('/protected', verifyToken, (req, res) => {
-  res.send(`Hola ${req.user.username} con correo: ${req.user.email}, esta es una ruta protegida.`);
+router.get('/dashboard', verifyToken, (req, res) => {
+  res.status(201).json( {message: "Token valido y acceso permitido a la ruta protegida", data: req.user})
 });
 
 module.exports = router;
