@@ -1,6 +1,28 @@
-import { Link } from "react-router-dom"
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 
 export default function ProtectedPage () {
+    const [formValues, setFormValues] = useState({
+        newPassword: '',
+        newPassword2: '',
+        resetToken: ''
+      });
+
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get('token');
+    
+    useEffect(() => {
+        if (token) {
+          setFormValues({
+            ...formValues,
+            resetToken: token
+        });
+          console.log('Reset Token:', token);
+        } else {
+            navigate('/')
+        }
+      }, []);
     const userName = "lexcode"
     return (
         <main className="p-2">
