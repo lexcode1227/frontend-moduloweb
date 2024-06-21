@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { API_URL } from '../../config';
 
 export default function ResetPasswordPage() {
     const [formValues, setFormValues] = useState({
@@ -38,7 +39,7 @@ export default function ResetPasswordPage() {
             return alert("Las contraseñas no coinciden")
         }
         try {
-            const res = await fetch('http://localhost:3000/api/auth/changePassword', {
+            const res = await fetch(`${API_URL}/api/auth/changePassword`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -77,10 +78,6 @@ export default function ResetPasswordPage() {
                         Change Password
                     </h2>
                     <form className="mt-4 space-y-4 lg:mt-5 md:space-y-5" action="#" onSubmit={handleSubmit}>
-                        {/* <div>
-                            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 ">Your email</label>
-                            <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="name@company.com" required=""/>
-                        </div> */}
                         <div>
                             <label htmlFor="newPassword" className="block mb-2 text-sm font-medium text-gray-900">New Password</label>
                             <input type="password" name="newPassword" id="newPassword" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required onChange={handleInputChange} value={formValues.newPassword}/>

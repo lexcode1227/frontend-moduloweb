@@ -13,10 +13,11 @@ app.use(express.static(path.join(__dirname, 'views')));
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI_PROD = process.env.MONGO_URI_PROD;
 
-mongoose.connect(MONGO_URI)
+mongoose.connect(MONGO_URI_PROD)
 .then(() => {
-  console.log('Conectado a MongoDB');
+  console.log('Conectado a MongoDB Atlas');
 }).catch((err) => {
   console.error('Error conectando a MongoDB', err);
 });

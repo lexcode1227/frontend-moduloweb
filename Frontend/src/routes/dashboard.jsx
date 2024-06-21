@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
+import { API_URL } from '../../config';
 
 export default function DashboardPage () {
     const [userData, setUserData] = useState(null)
@@ -14,7 +15,7 @@ export default function DashboardPage () {
     useEffect( ()=>{
         const token = Cookies.get('authToken');
         async function fetchData(){
-            const res = await fetch('http://localhost:3000/api/auth/dashboard', {
+            const res = await fetch(`${API_URL}/api/auth/dashboard`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
