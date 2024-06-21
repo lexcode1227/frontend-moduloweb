@@ -7,7 +7,15 @@ const authRoutes = require('./routes/auth');
 const cors = require('cors')
 
 const app = express();
-app.use(cors())
+
+const corsOptions = {
+  origin: ['http://localhost:5173', 'https://modulo-web.vercel.app/'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions))
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'views')));
 
