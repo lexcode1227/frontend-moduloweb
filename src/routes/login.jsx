@@ -60,11 +60,9 @@ export default function LoginPage() {
                 password: '',
               })
             if (result.token) {
-                // Almacenando el token en una cookie
                 const in30Minutes = 1/48; //mini calculo para reducir el tiempo de 1h a 30min
                 Cookies.set('authToken', result.token, { expires: in30Minutes });
 
-                // Redirigiendo a la ruta protegida después del login exitoso
                 navigate('/dashboard')
             } else {
                 alert("Error en el login, sin Token")

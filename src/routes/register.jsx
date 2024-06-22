@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from '../../config';
+import Cookies from 'js-cookie';
 
 export default function RegisterPage() {
     const [formValues, setFormValues] = useState({
@@ -10,6 +11,8 @@ export default function RegisterPage() {
         password: '',
         email: '',
       });
+
+    const navigate = useNavigate();
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -37,6 +40,28 @@ export default function RegisterPage() {
                 email: '',
               })
             alert(result.message)
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({username: formValues.username, password: formValues.password})
+                })
+                const result = await response.json()
+
+                if (result.token) {
+                    const in30Minutes = 1/48; //mini calculo para reducir el tiempo de 1h a 30min
+                    Cookies.set('authToken', result.token, { expires: in30Minutes });
+    
+                    navigate('/dashboard')
+                } else {
+                    alert("Error en el login, sin Token")
+                }
+                
+            } catch (error) {
+                console.log(error.message);
+            }
         } catch (error) {
             console.log(error.message);
         }
