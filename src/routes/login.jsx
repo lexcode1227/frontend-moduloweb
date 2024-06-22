@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Modal } from "flowbite-react";
+import { Modal } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { API_URL } from '../../config';
@@ -24,7 +24,8 @@ export default function LoginPage() {
             [name]: value
         });
     };
-    const handleRecoverPass = async()=> {
+    const handleRecoverPass = async(e)=> {
+        e.preventDefault();
         try {
             const res = await fetch(`${API_URL}/api/auth/forgotPassword`, {
                 method: 'POST',
@@ -39,7 +40,6 @@ export default function LoginPage() {
                 // console.log(result.message)
                 setOpenModal(false)
             }
-            navigate('/login')
         } catch (error) {
             console.log(error.message);
         }
@@ -78,10 +78,10 @@ export default function LoginPage() {
     return (
         <section className="bg-gray-50">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-                <a href="#" className="flex items-center mb-6 text-2xl font-bold leading-tight tracking-tight text-gray-900">
+                <Link to={'/'} className="flex items-center mb-6 text-2xl font-bold leading-tight tracking-tight text-gray-900">
                     <img className="w-8 h-8 mr-2" src="/devto-light.svg" alt="logo"/>
                     Devto    
-                </a>
+                </Link>
                 <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                         <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
