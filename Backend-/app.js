@@ -9,8 +9,9 @@ const cors = require('cors')
 const app = express();
 
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://modulo-web.vercel.app/'],
+  origin: ['http://localhost:5173', 'https://modulo-web.vercel.app'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   optionsSuccessStatus: 204
 };
@@ -33,8 +34,20 @@ mongoose.connect(MONGO_URI_PROD)
 app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+  const htmlResponse = `
+    <html>
+      <head>
+        <title>NodeJs y Express en vercel</title>
+      </head>
+      <body>
+        <h1>Soy un proyecto back en vercel</h1>
+      </body>
+    </html>
+  `
+  res.send(htmlResponse);
 });
+
+// app.options('*', cors(corsOptions));
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}, visita: http://localhost:${PORT}`);

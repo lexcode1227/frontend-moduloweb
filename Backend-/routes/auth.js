@@ -19,17 +19,13 @@ router.post('/register', async (req, res) => {
     if (existedUser) {
       return res.status(400).json({ message: 'El nombre de usuario o el correo electrónico ya están en uso' });
     }
-  } catch (err) {
-    res.status(400).json({message: `Error al verificar si el usuario esta registrado, ${err.message}`});
-  }
-  try {
     const newUser = new User({ name, lastname, username, password, email });
     await newUser.save();
     res.status(201).json({message: 'Usuario registrado', status: 201});
-  } catch (error) {
-    res.status(400).json({message: `Error registrando usuario, ${error.message}`})
-  }
 
+  } catch (err) {
+    res.status(400).json({message: `Error registrando usuario, ${err.message}`});
+  }
 });
 
 router.post('/login', async (req, res) => {

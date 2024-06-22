@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button, Modal } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { API_URL } from '../../config';
@@ -9,6 +10,7 @@ export default function LoginPage() {
         password: '',
       });
     const [email, setEmail] = useState('')
+    const [openModal, setOpenModal] = useState(false);
     
     const navigate = useNavigate();
 
@@ -22,7 +24,7 @@ export default function LoginPage() {
             [name]: value
         });
     };
-    const handleRecoverPass = async ()=> {
+    const handleRecoverPass = async()=> {
         try {
             const res = await fetch(`${API_URL}/api/auth/forgotPassword`, {
                 method: 'POST',
@@ -35,6 +37,7 @@ export default function LoginPage() {
             setEmail('')
             if (result.message) {
                 // console.log(result.message)
+                setOpenModal(false)
             }
             navigate('/login')
         } catch (error) {
@@ -102,7 +105,7 @@ export default function LoginPage() {
                                         <label htmlFor="remember" className="text-gray-500">Recuerdame</label>
                                     </div>
                                 </div>
-                                <button type="button" data-modal-target="static-modal"  data-modal-toggle="static-modal" className="text-sm font-medium text-blue-600 hover:underline">¿Olvidaste tu contraseña?</button>
+                                <button className="text-sm font-medium text-blue-600 hover:underline" onClick={() => setOpenModal(true)}>¿Olvidaste tu contraseña?</button>
                             </div>
                             <button type="submit" className="w-full text-white bg-[#2563eb] hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Ingresar</button>
                             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
@@ -111,41 +114,24 @@ export default function LoginPage() {
                         </form>
                     </div>
                 </div>
-
-                {/* <!-- Main modal --> */}
-                <div id="static-modal" data-modal-backdrop="static" tabIndex="-1" aria-hidden="true" className="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                        <div className="relative p-4 w-full max-w-2xl max-h-full">
-                            {/* Modal content */}
-                            <div className="relative bg-white rounded-lg shadow">
-                                {/* Modal header */}
-                                <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-                                    <h3 className="text-xl font-semibold text-gray-900">
-                                        Recuperar contraseña
-                                    </h3>
-                                    <button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="static-modal">
-                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                        </svg>
-                                        <span className="sr-only">Close modal</span>
-                                    </button>
+                
+                <Modal show={openModal} onClose={() => setOpenModal(false)}>
+                    <Modal.Header>Recuperar contraseña</Modal.Header>
+                    <Modal.Body>
+                        <div className="p-4 md:p-5 space-y-4">
+                            <form className="flex flex-col gap-4" action="#" onSubmit={handleRecoverPass}>
+                                <div>
+                                    <label htmlFor="emailReset" className="block mb-2 text-sm font-medium text-gray-900">Tu email</label>
+                                    <input type="email" name="emailReset" id="emailReset" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5" placeholder="name@company.com" required onChange={handleEmailInputChange} value={email}/>
                                 </div>
-                                {/*  Modal body */}
-                                <div className="p-4 md:p-5 space-y-4">
-                                    <form className="flex flex-col gap-4" action="#" onSubmit={handleRecoverPass}>
-                                        <div>
-                                            <label htmlFor="emailReset" className="block mb-2 text-sm font-medium text-gray-900">Tu email</label>
-                                            <input type="email" name="emailReset" id="emailReset" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5" placeholder="name@company.com" required onChange={handleEmailInputChange} value={email}/>
-                                        </div>
-                                        <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
-                                            <button data-modal-hide="static-modal" type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Recuperar</button>
-                                        </div>
-                                    </form>
-                                    {/* Modal footer */}
-                                    <p className="text-base leading-relaxed text-gray-500">En tu correo podras encontrar un enlace para poder cambiar tu contraseña.</p>
+                                <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
+                                    <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Recuperar</button>
                                 </div>
-                            </div>
+                            </form>
+                            <p className="text-base leading-relaxed text-gray-500">En tu correo podras encontrar un enlace para poder cambiar tu contraseña.</p>
                         </div>
-                </div>
+                    </Modal.Body>
+                </Modal>
             </div>
         </section>
     );
